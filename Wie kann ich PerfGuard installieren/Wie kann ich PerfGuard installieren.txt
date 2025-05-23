@@ -1,0 +1,60 @@
+@echo off
+REM ===========================================================
+REM Voraussetzungen:
+REM - SQL Server Command Line Utilities (sqlcmd) muss installiert sein
+REM - Ziel-SQL-Server erreichbar unter "Server"
+REM - Windows-Authentifizierung wird verwendet (-E)
+REM - Datenbank "Database" muss existieren
+REM - Script-Datei "install.sql" muss im gleichen Verzeichnis liegen
+REM ===========================================================
+
+@echo off
+SET LOG=log.txt
+SET SERVER=serverName
+SET DB=databaseName
+
+REM Altes Log löschen
+IF EXIST %LOG% DEL %LOG%
+
+REM Skript ausführen
+sqlcmd -S %SERVER% -d %DB% -E -i install.sql >> %LOG% 2>&1
+
+IF %ERRORLEVEL% NEQ 0 (
+    echo Fehler beim Ausführen. Details siehe %LOG%
+    notepad %LOG%
+) ELSE (
+    echo Installation abgeschlossen. Bitte pruefen, ob Fehler vorgefallen sind! Das Log befindet sich hier: %LOG%
+)
+Pause
+
+-------------------------------------
+
+@echo off
+REM ===========================================================
+REM Voraussetzungen:
+REM - SQL Server Command Line Utilities (sqlcmd) muss installiert sein
+REM - Ziel-SQL-Server erreichbar unter "Server"
+REM - SQL-Authentifizierung (Benutzername & Passwort) wird verwendet
+REM - Datenbank "Database" muss existieren
+REM - Script-Datei "install.sql" muss  im gleichen Verzeichnis liegen
+REM - HINWEIS: Falls das Passwort Sonderzeichen enthält, dieses in An- führungszeichen setzen (z. B. SET PWD="Mein!P@ss#")
+REM ===========================================================
+
+SET LOG=log.txt
+SET SERVER=serverName
+SET DB=databaseName
+SET USER=DeinBenutzername
+SET PWD=DeinPasswort
+
+IF EXIST %LOG% DEL %LOG%
+
+sqlcmd -S %SERVER% -d %DB% -U %USER% -P %PWD% -i install.sql >> %LOG% 2>&1
+
+IF %ERRORLEVEL% NEQ 0 (
+    echo Fehler beim Ausführen. Details siehe %LOG%
+    notepad %LOG%
+) ELSE (
+    echo Installation abgeschlossen. Bitte pruefen, ob Fehler vorgefallen sind! Das Log befindet sich hier: %LOG%
+)
+pause
+
